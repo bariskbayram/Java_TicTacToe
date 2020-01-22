@@ -96,7 +96,7 @@ public class TicTacToe {
         }
     }
 
-    public String checkWinner(){
+    private String checkWinner(){
         List<Integer> topRow = Arrays.asList(1,2,3);
         List<Integer> midRow = Arrays.asList(4,5,6);
         List<Integer> botRow = Arrays.asList(7,8,9);
