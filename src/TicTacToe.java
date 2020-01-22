@@ -1,33 +1,45 @@
-//Engin Canik - TicTacToe with JAVA!
-import java.lang.reflect.Array;
+//Engin Canik && Barış Kaan Bayram - TicTacToe with JAVA!
 import java.util.*;
 
 public class TicTacToe {
-    static ArrayList<Integer> playerPositions = new ArrayList<>();
-    static ArrayList<Integer> cpuPositions = new ArrayList<>();
-    static String state = "on";
-    public static void main(String[] args) {
-        char [][] gameBoard = {{' ','|',' ','|',' '},
-                {'-','+','-','+','-'},
-                {' ','|',' ','|',' '},
-                {'-','+','-','+','-'},
-                {' ','|',' ','|',' '}};
-        printGameBoard(gameBoard);
-        List<Integer> positionsList = new LinkedList<>(Arrays.asList(1,2,3,4,5,6,7,8,9));
-        Scanner scanner = new Scanner(System.in);
-        while (state.equals("on")){
-            System.out.println("Enter your placement (1-9): ");
-            int pos = scanner.nextInt();
-            signChooser(gameBoard, pos, "player");
-            if (checkWinner().equals(""))
-            signChooser(gameBoard, cpuRandomPosition(playerPositions,cpuPositions,positionsList), "cpu");
-            printGameBoard(gameBoard);
-            System.out.println(playerPositions);
-            System.out.println(checkWinner());
-        }
+    public static int[] gameStatistics = {0,0};
+    private ArrayList<Integer> playerPositions;
+    private ArrayList<Integer> cpuPositions;
+    private String state;
+    private GUI gui;
+    private String result;
+    private char [][] gameBoard = {{' ','|',' ','|',' '},
+            {'-','+','-','+','-'},
+            {' ','|',' ','|',' '},
+            {'-','+','-','+','-'},
+            {' ','|',' ','|',' '}};
+
+    public TicTacToe(){
+        playerPositions = new ArrayList<>();
+        cpuPositions = new ArrayList<>();
+        state = "on";
     }
 
-    public static int cpuRandomPosition(ArrayList<Integer> playerPositions,ArrayList<Integer> cpuPositions,List<Integer> positionsList){
+    public void startGame(){
+        gui = new GUI(this);
+        gui.start();
+        gameStatistics[0]+=1;
+    }
+
+    public String[] singleTurn(int location){
+        List<Integer> positionsList = new LinkedList<>(Arrays.asList(1,2,3,4,5,6,7,8,9));
+        signChooser(gameBoard, location, "player");
+        result = checkWinner();
+        if(state.equals("off"))
+            return new String[]{state, result};
+        signChooser(gameBoard, cpuRandomPosition(playerPositions, cpuPositions, positionsList), "cpu");
+        result = checkWinner();
+        if(state.equals("off"))
+            return new String[]{state, result};
+        return new String[]{state, result};
+    }
+
+    private int cpuRandomPosition(ArrayList<Integer> playerPositions,ArrayList<Integer> cpuPositions,List<Integer> positionsList){
         Random rand = new Random();
         int cpuPos = positionsList.get(rand.nextInt(positionsList.size()));
         while (playerPositions.contains(cpuPos) || cpuPositions.contains(cpuPos)){
@@ -36,37 +48,21 @@ public class TicTacToe {
         return cpuPos;
     }
 
-    public static void printGameBoard(char[][] gameBoard){
-        for (char[] row : gameBoard){
-            for (char column : row){
-                System.out.print(column);
-            }
-            System.out.println();
-        }
-    }
-
-    public static void signChooser (char[][] gameBoard,int pos,String user){
+    private void signChooser (char[][] gameBoard,int pos,String user){
         char moveSign;
         if (user.equals("player")){
             moveSign = 'X';
-            if (!playerPositions.contains(pos) && ! cpuPositions.contains(pos)){
-                playerPositions.add(pos);
-                placeSign(gameBoard,pos, moveSign);
-            }
-            else{
-                System.out.println("Please select a empty tile!: ");
-                Scanner scan = new Scanner(System.in);
-                pos = scan.nextInt();
-                signChooser(gameBoard,pos,"player");
-            }
+            playerPositions.add(pos);
+            placeSign(gameBoard,pos, moveSign);
         }else {
             moveSign = 'O';
             placeSign(gameBoard,pos,moveSign);
             cpuPositions.add(pos);
+            gui.changeButtonForCpuChoice(pos);
         }
     }
 
-    public static void placeSign(char[][] gameBoard, int pos, char moveSign){
+    private void placeSign(char[][] gameBoard, int pos, char moveSign){
         switch (pos) {
             case 1:
                 gameBoard[0][0] = moveSign;
@@ -100,7 +96,7 @@ public class TicTacToe {
         }
     }
 
-    public static String checkWinner(){
+    public String checkWinner(){
         List<Integer> topRow = Arrays.asList(1,2,3);
         List<Integer> midRow = Arrays.asList(4,5,6);
         List<Integer> botRow = Arrays.asList(7,8,9);
@@ -127,12 +123,13 @@ public class TicTacToe {
             }else if(cpuPositions.containsAll(l)){
                 state = "off";
                 return "You lost!";
-            }else if (playerPositions.size() + cpuPositions.size() == 9){
-                state = "off";
-                return "Draw!";
             }
         }
-        return "";
+        if (playerPositions.size() + cpuPositions.size() == 9){
+            state = "off";
+            return "Draw!";
+        }
+        return "on";
     }
 
 }
