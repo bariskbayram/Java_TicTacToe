@@ -1,10 +1,20 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedInputStream;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class GUI extends JFrame {
     private JPanel mainPanel;
@@ -27,6 +37,8 @@ public class GUI extends JFrame {
     private String[] status;
     private Image image1;
     private Image image2;
+    private Image image3;
+    private Player mp3player;
 
     public GUI(TicTacToe ticTacToe){
         this.ticTacToe = ticTacToe;
@@ -38,8 +50,10 @@ public class GUI extends JFrame {
     private void putButtonsToMap() {
         for (JButton button : buttonList){
             buttonMap.put(button,true);
+            button.setIcon(new ImageIcon(image3));
             button.setBackground(Color.WHITE);
         }
+        restartButton.setBackground(Color.WHITE);
     }
 
     private boolean changeButtonBackground(JButton button, String user){
@@ -52,6 +66,30 @@ public class GUI extends JFrame {
                 button.setIcon(new ImageIcon(image1));
         }
         return true;
+    }
+
+    public void playMusic() {
+        String song = "https://mp3yukleindir.mobi/mp3_files/8b75f51579720a62bcf9442b9b5933aa.mp3";
+        mp3player = null;
+        BufferedInputStream in = null;
+        try {
+            in = new BufferedInputStream(new URL(song).openStream());
+            mp3player = new Player(in);
+            mp3player.play();
+        } catch (MalformedURLException ex) {
+        } catch (IOException e) {
+        } catch (JavaLayerException e) {
+        } catch (NullPointerException ex) {
+        }
+    }
+
+    public void executeThreads(){
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        executorService.submit(this::playMusic);
+        executorService.submit(this::start);
+
+        executorService.shutdown();
     }
 
     private void putActions() {
@@ -195,6 +233,7 @@ public class GUI extends JFrame {
         try {
             image1 = ImageIO.read(getClass().getResource("image1.jpg"));
             image2 = ImageIO.read(getClass().getResource("image2.jpg"));
+            image3 = ImageIO.read(getClass().getResource("image3.jpeg"));
         } catch (Exception ex) {
         }
     }

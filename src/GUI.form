@@ -169,12 +169,12 @@
       <component id="40d2" class="javax.swing.JButton" binding="restartButton">
         <constraints>
           <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
+          <gridbag top="0" left="70" bottom="0" right="70" weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
-          <maximumSize width="50" height="80"/>
-          <minimumSize width="50" height="80"/>
-          <preferredSize width="50" height="80"/>
+          <maximumSize width="20" height="80"/>
+          <minimumSize width="20" height="80"/>
+          <preferredSize width="20" height="80"/>
           <text value="Restart"/>
         </properties>
       </component>

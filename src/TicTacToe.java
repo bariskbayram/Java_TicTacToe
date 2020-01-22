@@ -22,7 +22,10 @@ public class TicTacToe {
 
     public void startGame(){
         gui = new GUI(this);
-        gui.start();
+        if(gameStatistics[0] == 0)
+            gui.executeThreads();
+        else
+            gui.start();
         gameStatistics[0]+=1;
     }
 
@@ -131,5 +134,4 @@ public class TicTacToe {
         }
         return "on";
     }
-
 }
